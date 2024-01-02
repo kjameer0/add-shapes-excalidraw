@@ -55,7 +55,8 @@ export function handleCreateShapeClick(
   const appState = excalidrawAPI.getAppState();
   const currentTool = appState.activeTool.type;
   if (isNonShapeTool(currentTool) || !excalidrawAPI) return;
-
+  if(currentTool=== "line" || currentTool === "arrow") return;
+  
   const { x, y } = viewportCoordsToSceneCoords(
     {
       clientX: evt.clientX,
