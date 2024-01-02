@@ -8,15 +8,17 @@ import {
 } from "@excalidraw/excalidraw";
 import { ExcalidrawElementSkeleton } from "@excalidraw/excalidraw/types/data/transform";
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
-// import { MouseEvent } from "react";
 
-type OneDimensionalShapeType = Extract<ToolType, "line" | "arrow">;
-type TwoDimensionalShapeType = Extract<
-  ToolType,
-  "rectangle" | "diamond" | "ellipse"
->;
 type NonShapeToolType =
-  | Exclude<ToolType, OneDimensionalShapeType | TwoDimensionalShapeType>
+  | "selection"
+  | "freedraw"
+  | "text"
+  | "image"
+  | "eraser"
+  | "hand"
+  | "frame"
+  | "embeddable"
+  | "laser"
   | "custom";
 
 const isNonShapeTool = (
@@ -36,18 +38,6 @@ const isNonShapeTool = (
   ];
   return nonShapeTools.includes(tool);
 };
-const isOneDimensionalShapeTool = (
-  tool: ToolType
-): tool is OneDimensionalShapeType => {
-  const oneDTools = ["line", "arrow"];
-  return oneDTools.includes(tool);
-};
-const isTwoDimensionalShapeTool = (
-  tool: ToolType
-): tool is TwoDimensionalShapeType => {
-  const twoDTools = ["rectangle", "diamond", "ellipse"];
-  return twoDTools.includes(tool);
-};
 
 export function handleCreateShapeClick(
   evt: React.MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
@@ -63,6 +53,9 @@ export function handleCreateShapeClick(
   evt.stopPropagation();
 
   const appState = excalidrawAPI.getAppState();
+  const currentTool = appState.activeTool.type;
+  if (isNonShapeTool(currentTool) || !excalidrawAPI) return;
+
   const { x, y } = viewportCoordsToSceneCoords(
     {
       clientX: evt.clientX,
@@ -70,9 +63,8 @@ export function handleCreateShapeClick(
     },
     appState
   );
-  const currentTool = appState.activeTool.type;
-  if (isNonShapeTool(currentTool) || !excalidrawAPI) return;
-  const finalElement: ExcalidrawElementSkeleton = {
+
+  const newElement: ExcalidrawElementSkeleton = {
     type: currentTool,
     x,
     y,
@@ -82,6 +74,6 @@ export function handleCreateShapeClick(
   const sceneElements = [
     ...excalidrawAPI.getSceneElements(),
   ] as ExcalidrawElement[];
-  sceneElements.push(convertToExcalidrawElements([finalElement])[0]);
+  sceneElements.push(convertToExcalidrawElements([newElement])[0]);
   excalidrawAPI.updateScene({ elements: sceneElements });
 }
