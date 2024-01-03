@@ -8,37 +8,14 @@ import {
 } from "@excalidraw/excalidraw";
 import { ExcalidrawElementSkeleton } from "@excalidraw/excalidraw/types/data/transform";
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
+import { NON_SHAPE_TOOLS } from "../constants/excalidraw-constants";
 
-type NonShapeToolType =
-  | "selection"
-  | "freedraw"
-  | "text"
-  | "image"
-  | "eraser"
-  | "hand"
-  | "frame"
-  | "embeddable"
-  | "laser"
-  | "custom";
+type NonShapeToolTuple = typeof NON_SHAPE_TOOLS;
+type NonShapeToolType = NonShapeToolTuple[number];
 
-const isNonShapeTool = (
-  tool: ToolType | "custom"
-): tool is NonShapeToolType => {
-  const nonShapeTools = [
-    "selection",
-    "freedraw",
-    "text",
-    "image",
-    "eraser",
-    "hand",
-    "frame",
-    "embeddable",
-    "laser",
-    "custom",
-  ];
-  return nonShapeTools.includes(tool);
-};
-
+function isNonShapeTool(tool: ToolType | "custom"): tool is NonShapeToolType {
+  return !(tool in NON_SHAPE_TOOLS);
+}
 export function handleCreateShapeClick(
   evt: React.MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
   excalidrawAPI: ExcalidrawImperativeAPI | undefined,
@@ -49,14 +26,12 @@ export function handleCreateShapeClick(
   if (!(evt.target instanceof HTMLElement)) return;
   if (!excalidrawAPI) return;
   if (evt.target.nodeName !== "CANVAS") return;
-
   evt.stopPropagation();
 
   const appState = excalidrawAPI.getAppState();
   const currentTool = appState.activeTool.type;
   if (isNonShapeTool(currentTool) || !excalidrawAPI) return;
-  if(currentTool=== "line" || currentTool === "arrow") return;
-  
+
   const { x, y } = viewportCoordsToSceneCoords(
     {
       clientX: evt.clientX,
