@@ -10,12 +10,15 @@ import { ExcalidrawElementSkeleton } from "@excalidraw/excalidraw/types/data/tra
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import { NON_SHAPE_TOOLS } from "../constants/excalidraw-constants";
 
-type NonShapeToolTuple = typeof NON_SHAPE_TOOLS;
-type NonShapeToolType = NonShapeToolTuple[number];
 
-function isNonShapeTool(tool: ToolType | "custom"): tool is NonShapeToolType {
-  return !(tool in NON_SHAPE_TOOLS);
-}
+type NonShapeTupleType = typeof NON_SHAPE_TOOLS;
+type NonShapeToolType = NonShapeTupleType[number]
+const isNonShapeTool = (
+  tool: ToolType | "custom"
+): tool is NonShapeToolType => {
+  return NON_SHAPE_TOOLS.includes(tool as NonShapeToolType);
+};
+
 export function handleCreateShapeClick(
   evt: React.MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
   excalidrawAPI: ExcalidrawImperativeAPI | undefined,
