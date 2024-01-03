@@ -16,16 +16,11 @@ export default function ExcalidrawWrapper() {
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
 
   return (
-    <div  className="flex h-screen">
-      <div
-        onClick={(evt) => handleCreateShapeClick(evt, excalidrawAPI, 300, 300)}
-        className="w-screen"
-      >
-        <Excalidraw
-          excalidrawAPI={(api) => setExcalidrawAPI(api)}
-          theme="dark"
-        />
-      </div>
+    <div
+      onClick={(evt) => handleCreateShapeClick(evt, excalidrawAPI, 300, 300)}
+      className="w-2/3 h-screen"
+    >
+      <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)} theme="dark" />
     </div>
   );
 }
